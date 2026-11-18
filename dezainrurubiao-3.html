@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>デザインルール</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#fff6f8; --surface:#ffffff; --surface2:#fff0f4; --ink:#46303c; --ink-soft:#8a6b7a;
+    --line:#f3d3de; --accent:#e0527e; --accent-ink:#ffffff; --accent-soft:#ffd9e6;
+    --chip:#ffeef4; --shadow:0 6px 24px rgba(224,82,126,.10);
+    --star:#f5a623;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#22181d; --surface:#2f222a; --surface2:#3a2833; --ink:#f9e9ef; --ink-soft:#c9a7b6;
+      --line:#543a48; --accent:#f07ba3; --accent-ink:#2a121d; --accent-soft:#5b3043;
+      --chip:#3d2834; --shadow:0 6px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",sans-serif;
+    line-height:1.65;}
+  button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]),textarea{min-height:2.25rem}
+  button{font:inherit;cursor:pointer}
+  input,select,textarea{font:inherit;color:var(--ink)}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 16px 64px}
+
+  header.top{padding:14px 2px 6px}
+  header.top h1{font-size:clamp(28px,5vw,40px);font-weight:900;margin:0;letter-spacing:.02em}
+  header.top h1 .heart{color:var(--accent)}
+  header.top p.sub{margin:6px 0 0;color:var(--ink-soft);font-size:15px}
+
+  .toolbar{position:sticky;top:0;z-index:20;background:var(--bg);padding:14px 0 10px}
+  .search-row{display:flex;gap:8px;flex-wrap:wrap}
+  .search-box{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--surface);
+    border:1.5px solid var(--line);border-radius:999px;padding:0 16px}
+  .search-box svg{flex:none}
+  .search-box input{flex:1;border:0;background:transparent;outline:none;min-height:2.6rem;font-size:16px;color:var(--ink)}
+  .btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;
+    padding:8px 18px;font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .btn:active{transform:scale(.98)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+  .chip-btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);
+    border-radius:999px;padding:6px 16px;font-weight:700;font-size:13.5px;min-height:2.25rem}
+  .chip-btn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .toolbar select{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:500}
+  .view-toggle{margin-left:auto;display:flex;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;overflow:hidden}
+  .view-toggle button{border:0;background:transparent;padding:6px 14px;font-size:13.5px;font-weight:700;color:var(--ink-soft);min-height:2.25rem}
+  .view-toggle button.on{background:var(--accent-soft);color:var(--ink)}
+
+  .count-line{color:var(--ink-soft);font-size:13px;margin:14px 2px 10px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .card{background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;gap:10px;cursor:pointer;text-align:left;width:100%}
+  .card h3{margin:0;font-size:17px;font-weight:900;line-height:1.45}
+  .card .body-preview{color:var(--ink-soft);font-size:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card .body-preview img{max-width:100%;border-radius:10px}
+  .card-foot{margin-top:auto;display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:12.5px}
+  .label-chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 12px;font-size:12.5px;font-weight:700;color:#46303c;border:1.5px solid rgba(0,0,0,.06)}
+  .label-chip .cat{font-weight:500;opacity:.75;font-size:11.5px}
+  .star-btn{margin-left:auto;border:0;background:transparent;font-size:21px;line-height:1;padding:6px;color:#d8bfc9;min-height:2.25rem;min-width:2.25rem}
+  .star-btn.on{color:var(--star)}
+  .comment-count{display:inline-flex;align-items:center;gap:4px}
+
+  .list-view{display:flex;flex-direction:column;gap:10px}
+  .list-row{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow);
+    display:flex;align-items:center;gap:12px;cursor:pointer;text-align:left;width:100%;flex-wrap:wrap}
+  .list-row h3{margin:0;font-size:15.5px;font-weight:900;flex:1 1 200px}
+  .list-row .date{color:var(--ink-soft);font-size:12.5px}
+
+  .empty{background:var(--surface);border:2px dashed var(--line);border-radius:20px;padding:44px 24px;text-align:center}
+  .empty .big{font-size:19px;font-weight:900;margin:0 0 6px}
+  .empty p{color:var(--ink-soft);margin:0 0 18px;font-size:14px}
+
+  /* モーダル */
+  .overlay{position:fixed;inset:0;background:rgba(50,20,35,.45);z-index:50;display:none;align-items:flex-end;justify-content:center}
+  .overlay.open{display:flex}
+  .sheet{background:var(--surface);width:100%;max-width:680px;max-height:92dvh;overflow:auto;border-radius:24px 24px 0 0;padding:22px 20px 30px}
+  @media(min-width:700px){.overlay{align-items:center;padding:20px}.sheet{border-radius:24px}}
+  .sheet h2{margin:0 40px 4px 0;font-size:21px;font-weight:900;line-height:1.4}
+  .sheet .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0 14px}
+  .sheet .date{color:var(--ink-soft);font-size:12.5px}
+  .close-x{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);font-size:17px;color:var(--ink)}
+  .sheet-wrap{position:relative}
+  .rich-body{font-size:15px;overflow-wrap:anywhere}
+  .rich-body img{max-width:100%;border-radius:12px;margin:6px 0}
+  .sheet-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+  .btn.danger{color:#d33;border-color:#f0c4c4}
+  @media (prefers-color-scheme: dark){.btn.danger{color:#ff9c9c;border-color:#6b3a3a}}
+
+  .comments{margin-top:26px;border-top:1.5px solid var(--line);padding-top:16px}
+  .comments h3{margin:0 0 10px;font-size:15px;font-weight:900}
+  .comment{background:var(--surface2);border-radius:14px;padding:10px 14px;margin-bottom:8px}
+  .comment .c-head{display:flex;gap:8px;align-items:baseline;font-size:12.5px;color:var(--ink-soft)}
+  .comment .c-name{font-weight:700;color:var(--ink);font-size:13px}
+  .comment p{margin:2px 0 0;font-size:14px;overflow-wrap:anywhere}
+  .comment-form{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .comment-form input,.comment-form textarea,.field input[type="text"],.field select,.field textarea{
+    border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:9px 12px;width:100%}
+  .comment-form textarea{resize:vertical}
+
+  /* フォーム */
+  .field{margin-bottom:16px}
+  .field label.flabel{display:block;font-weight:700;font-size:13.5px;margin-bottom:6px}
+  .field .hint{font-size:12px;color:var(--ink-soft);margin-top:4px}
+  .editor-shell{border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+  .editor-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--surface2);padding:8px;border-bottom:1.5px solid var(--line)}
+  .tool-btn{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;min-width:2.5rem;padding:4px 10px;font-weight:900;font-size:14px;color:var(--ink)}
+  .tool-btn.wide{font-weight:700;font-size:13px}
+  .editor-toolbar select{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:4px 8px;font-size:13px}
+  .color-tool{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--ink-soft)}
+  input[type="color"]{width:40px;height:40px;border:1.5px solid var(--line);border-radius:50%;padding:2px;background:var(--surface);cursor:pointer;min-height:2.5rem}
+  input[type="color"]::-webkit-color-swatch-wrapper{padding:2px}
+  input[type="color"]::-webkit-color-swatch{border:0;border-radius:50%}
+  .editor{min-height:170px;padding:14px;outline:none;font-size:15px;overflow-wrap:anywhere;background:var(--surface)}
+  .editor:empty::before{content:"ルールの内容を書いてね。文字を選んで太字・色・サイズが変えられるよ";color:var(--ink-soft)}
+  .editor img{max-width:100%;border-radius:10px}
+
+  /* ラベル管理 */
+  .label-section{margin-bottom:22px}
+  .label-section h3{margin:0 0 8px;font-size:15px;font-weight:900}
+  .label-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--surface2);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+  .label-row .lname{font-weight:700;font-size:14px;min-width:74px}
+  .swatches{display:flex;gap:5px;flex-wrap:wrap}
+  .swatch{width:26px;height:26px;border-radius:50%;border:2px solid transparent;padding:0;min-height:26px}
+  .swatch.on{border-color:var(--ink)}
+  .mini-btn{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:700;color:var(--ink)}
+  .mini-btn.danger{color:#d33}
+  .add-label-row{display:flex;gap:8px}
+  .add-label-row input{flex:1;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:9px 12px}
+
+  /* GitHubコード */
+  .github-box{margin-top:56px;background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:24px 20px;box-shadow:var(--shadow)}
+  .github-box h2{margin:0 0 6px;font-size:20px;font-weight:900}
+  .github-box>p{color:var(--ink-soft);font-size:14px;margin:0 0 14px}
+  .github-box ol{margin:0 0 16px;padding-left:22px;font-size:14px}
+  .github-box ol li{margin-bottom:6px}
+  .github-box code{background:var(--surface2);border-radius:6px;padding:1px 7px;font-size:13px}
+  .code-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:18px 0 8px}
+  .code-head h3{margin:0;font-size:15px;font-weight:900;flex:1}
+  pre.code{background:#2b1d25;color:#ffeef5;border-radius:14px;padding:16px;overflow:auto;max-height:340px;font-size:12px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+  @media (prefers-color-scheme: dark){pre.code{background:#171014}}
+  .note{font-size:12.5px;color:var(--ink-soft);margin-top:8px}
+  footer{margin-top:34px;text-align:center;color:var(--ink-soft);font-size:12.5px}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);
+    border-radius:999px;padding:10px 22px;font-size:14px;font-weight:700;z-index:99;transition:transform .25s;box-shadow:var(--shadow)}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>デザインルール <span class="heart">♡</span></h1>
+    <p class="sub">デザインする時のルールを検索できるよ。</p>
+  </header>
+
+  <div class="toolbar">
+    <div class="search-row">
+      <div class="search-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0527e" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg>
+        <input id="searchInput" type="search" placeholder="ルール名・内容・ラベルで検索…" aria-label="検索" />
+      </div>
+      <button class="btn" id="labelManageBtn" type="button">ラベル管理</button>
+      <button class="btn primary" id="addRuleBtn" type="button">＋ ルールを追加</button>
+    </div>
+    <div class="chips" role="group" aria-label="絞り込み">
+      <button class="chip-btn on" data-cat="all" type="button">すべて</button>
+      <button class="chip-btn" data-cat="client" type="button">クライアント</button>
+      <button class="chip-btn" data-cat="maker" type="button">生産先</button>
+      <button class="chip-btn" data-cat="internal" type="button">社内（ルール）</button>
+      <button class="chip-btn" data-cat="bookmark" type="button">★ ブックマーク</button>
+      <select id="labelFilter" aria-label="ラベルで絞り込み"><option value="">ラベル：すべて</option></select>
+      <div class="view-toggle" role="group" aria-label="表示切り替え">
+        <button id="viewCard" class="on" type="button">カード</button>
+        <button id="viewList" type="button">一覧</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="count-line" id="countLine"></p>
+  <main id="results"></main>
+
+  <section class="github-box" aria-labelledby="ghTitle">
+    <h2 id="ghTitle">GitHub用コード（Supabase連携版）</h2>
+    <p>この形で確定したデザインを、みんなで編集できる本番サイトにするためのコードだよ。下のコードをそのまま使うと、保存先がSupabaseにつながるよ。</p>
+    <ol>
+      <li><a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a> でプロジェクトを作る（無料枠でOK）</li>
+      <li>Supabaseの <strong>SQL Editor</strong> に、下の「① SQL」を貼って実行する</li>
+      <li>「② index.html」をダウンロードして、冒頭の <code>SUPABASE_URL</code> と <code>SUPABASE_ANON_KEY</code> に、自分のプロジェクトの値を入れる（Settings → API で確認できるよ）</li>
+      <li>そのファイルをGitHubのリポジトリに <code>index.html</code> として置いて、Settings → Pages で公開する</li>
+    </ol>
+
+    <div class="code-head">
+      <h3>① SQL（Supabaseに貼るだけ）</h3>
+      <button class="btn" id="copySqlBtn" type="button">SQLをコピー</button>
+    </div>
+    <pre class="code" id="sqlView"></pre>
+
+    <div class="code-head">
+      <h3>② index.html（GitHubに置くファイル）</h3>
+      <button class="btn" id="copyCodeBtn" type="button">コードをコピー</button>
+      <button class="btn primary" id="downloadCodeBtn" type="button">index.html をダウンロード</button>
+    </div>
+    <pre class="code" id="codeView"></pre>
+    <p class="note">※ ブックマークは端末ごとに保存されるよ（Supabase版の仕様）。ルール・ラベル・コメントはSupabaseに保存されて、みんなで共有できるよ。画像は本文にそのまま入るから、大きい画像は容量（無料枠1GB）に注意してね。</p>
+  </section>
+
+  <footer>デザインルール — みんなで育てるルール表</footer>
+</div>
+
+<!-- 詳細 -->
+<div class="overlay" id="detailOverlay" role="dialog" aria-modal="true">
+  <div class="sheet sheet-wrap">
+    <button class="close-x" data-close="detailOverlay" type="button" aria-label="閉じる">✕</button>
+    <h2 id="dTitle"></h2>
+    <div class="meta"><span id="dChip"></span><span class="date" id="dDate"></span></div>
+    <div class="rich-body" id="dBody"></div>
+    <div class="sheet-actions">
+      <button class="btn" id="dBookmark" type="button">☆ ブックマーク</button>
+      <button class="btn" id="dEdit" type="button">編集する</button>
+      <button class="btn danger" id="dDelete" type="button">削除する</button>
+    </div>
+    <div class="comments">
+      <h3>コメント</h3>
+      <div id="commentList"></div>
+      <form class="comment-form" id="commentForm">
+        <input type="text" id="commentName" placeholder="名前（任意）" autocomplete="off" />
+        <textarea id="commentText" rows="2" placeholder="コメントを書く…" required></textarea>
+        <div><button class="btn primary" type="submit">コメントを残す</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 追加・編集 -->
+<div class="overlay" id="editorOverlay" role="dialog" aria-modal="true">
+  <div class="sheet sheet-wrap">
+    <button class="close-x" data-close="editorOverlay" type="button" aria-label="閉じる">✕</button>
+    <h2 id="eTitle">ルールを追加</h2>
+    <form id="ruleForm" style="margin-top:14px">
+      <div class="field">
+        <label class="flabel" for="fTitle">ルール名</label>
+        <input type="text" id="fTitle" placeholder="例：ロゴの周りには余白をあける" required />
+      </div>
+      <div class="field">
+        <label class="flabel" for="fCat">区分</label>
+        <select id="fCat">
+          <option value="client">クライアント</option>
+          <option value="maker">生産先</option>
+          <option value="internal">社内（ルール）</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="flabel" for="fLabel">ラベル（名前）</label>
+        <select id="fLabel"></select>
+        <p class="hint">名前がない時は「ラベル管理」から追加できるよ。社内（ルール）は名前なしでもOK。</p>
+      </div>
+      <div class="field">
+        <label class="flabel">ルールの内容</label>
+        <div class="editor-shell">
+          <div class="editor-toolbar">
+            <button class="tool-btn" id="boldBtn" type="button" title="太字">B</button>
+            <label class="color-tool">文字色 <input type="color" id="foreColor" value="#e0527e" /></label>
+            <select id="fontSizeSel" aria-label="フォントサイズ">
+              <option value="">サイズ</option>
+              <option value="13px">小</option>
+              <option value="15px">ふつう</option>
+              <option value="19px">大</option>
+              <option value="24px">特大</option>
+            </select>
+            <button class="tool-btn wide" id="imgBtn" type="button">画像を入れる</button>
+            <input type="file" id="imgFile" accept="image/*" hidden />
+          </div>
+          <div class="editor" id="fBody" contenteditable="true"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="flabel" for="fTags">タグ（カンマ区切り・任意）</label>
+        <input type="text" id="fTags" placeholder="例：ロゴ, 入稿, カラー" />
+      </div>
+      <div class="sheet-actions">
+        <button class="btn primary" type="submit">保存する</button>
+        <button class="btn" type="button" data-close="editorOverlay">キャンセル</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ラベル管理 -->
+<div class="overlay" id="labelOverlay" role="dialog" aria-modal="true">
+  <div class="sheet sheet-wrap">
+    <button class="close-x" data-close="labelOverlay" type="button" aria-label="閉じる">✕</button>
+    <h2>ラベル管理</h2>
+    <p style="color:var(--ink-soft);font-size:13.5px;margin:6px 0 18px">名前の追加・削除と、タグの色が変えられるよ。色はパステルから選ぶか、カラーサークルで自由に選んでね。</p>
+    <div id="labelSections"></div>
+  </div>
+</div>
+
+<!-- 確認 -->
+<div class="overlay" id="confirmOverlay" role="dialog" aria-modal="true">
+  <div class="sheet sheet-wrap" style="max-width:430px">
+    <h2 id="confirmMsg" style="font-size:17px"></h2>
+    <div class="sheet-actions">
+      <button class="btn danger" id="confirmYes" type="button">削除する</button>
+      <button class="btn" id="confirmNo" type="button">やめる</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- GitHub用 index.html（Supabase連携版）の実物。ダウンロード／コピーはこの中身を使う -->
+<textarea id="ghCodeStore" hidden aria-hidden="true"><!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>デザインルール</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;background:#fff6f8;color:#46303c;margin:0;line-height:1.65}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 64px}
+h1{font-size:36px;font-weight:900;margin:10px 0 0}
+.sub{color:#8a6b7a;margin:4px 0 16px}
+input,select,textarea,button{font:inherit}
+.btn{border:1.5px solid #f3d3de;background:#fff;border-radius:999px;padding:8px 18px;font-weight:700;cursor:pointer;min-height:2.25rem}
+.btn.primary{background:#e0527e;border-color:#e0527e;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:14px}
+.card{background:#fff;border:1.5px solid #f3d3de;border-radius:20px;padding:18px;cursor:pointer;text-align:left;width:100%}
+.card h3{margin:0 0 8px;font-size:17px}
+.chip{display:inline-block;border-radius:999px;padding:3px 12px;font-size:12.5px;font-weight:700}
+.star{float:right;border:0;background:none;font-size:20px;cursor:pointer;color:#d8bfc9}
+.star.on{color:#f5a623}
+.search{width:100%;border:1.5px solid #f3d3de;border-radius:999px;padding:10px 18px;background:#fff}
+dialog{border:1.5px solid #f3d3de;border-radius:20px;max-width:640px;width:92vw}
+dialog img{max-width:100%;border-radius:10px}
+.editor{border:1.5px solid #f3d3de;border-radius:12px;min-height:150px;padding:12px;background:#fff}
+.field{margin-bottom:14px}
+.field label{display:block;font-weight:700;font-size:13.5px;margin-bottom:5px}
+.field input[type=text],.field select,.field textarea{width:100%;border:1.5px solid #f3d3de;border-radius:12px;padding:9px 12px}
+.comment{background:#fff0f4;border-radius:12px;padding:8px 12px;margin-bottom:8px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>デザインルール ♡</h1>
+  <p class="sub">デザインする時のルールを検索できるよ。</p>
+  <input class="search" id="q" type="search" placeholder="ルール名・内容・ラベルで検索…">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+    <button class="btn" id="labelBtn">ラベル管理</button>
+    <button class="btn primary" id="addBtn">＋ ルールを追加</button>
+    <label style="display:inline-flex;align-items:center;gap:6px;font-size:14px"><input type="checkbox" id="bmOnly"> ★ブックマークだけ</label>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p id="empty" style="color:#8a6b7a;display:none">まだルールがないよ。「＋ ルールを追加」から1件目を登録してね。</p>
+</div>
+
+<dialog id="dlg"></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ★ここに自分のSupabaseの値を入れてね（Settings → API）
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const CATS = { client: "クライアント", maker: "生産先", internal: "社内（ルール）" };
+const PALETTE = ["#ffd9e6","#ffe9c9","#fff7ae","#d8f3c5","#c9ecdf","#cfe8ff","#ddd6fe","#f6d3ea"];
+let labels = [], rules = [], bookmarks = new Set(JSON.parse(localStorage.getItem("dr_bookmarks") || "[]"));
+const $ = id => document.getElementById(id);
+const esc = s => (s || "").replace(/&/g, "&" + "amp;").replace(/</g, "&" + "lt;").replace(/>/g, "&" + "gt;");
+function sanitizeHtml(html){
+  const tpl = document.createElement("template"); tpl.innerHTML = html || "";
+  const allowed = { B:1, STRONG:1, I:1, EM:1, U:1, SPAN:1, FONT:1, P:1, BR:1, DIV:1, IMG:1, UL:1, OL:1, LI:1 };
+  const walk = node => { [...node.childNodes].forEach(ch => {
+    if (ch.nodeType !== 1) return;
+    if (!allowed[ch.tagName]) { walk(ch); ch.replaceWith(...ch.childNodes); return; }
+    [...ch.attributes].forEach(a => { const n = a.name.toLowerCase();
+      if (ch.tagName === "IMG" && n === "src" && /^(https?:|data:image\/)/i.test(a.value)) return;
+      if (ch.tagName === "IMG" && n === "alt") return;
+      if (n === "style") { const safe = a.value.split(";").map(s => s.trim()).filter(s => /^(color|font-size|font-weight|font-style|text-decoration)\s*:/i.test(s) && !/url\(|expression/i.test(s)).join("; ");
+        if (safe) ch.setAttribute("style", safe); else ch.removeAttribute("style"); return; }
+      if (ch.tagName === "FONT" && (n === "color" || n === "size")) return;
+      ch.removeAttribute(a.name); });
+    walk(ch); }); };
+  walk(tpl.content); return tpl.innerHTML;
+}
+function autoColor(name){ let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; }
+function labelOf(r){ return labels.find(l => l.id === r.label_id); }
+function chipHtml(r){ const l = labelOf(r); if (!l) return '<span class="chip" style="background:#ffeef4">' + CATS[r.category] + "</span>";
+  return '<span class="chip" style="background:' + (l.color || autoColor(l.name)) + '">' + CATS[r.category] + "：" + esc(l.name) + "</span>"; }
+
+async function load(){
+  const a = await sb.from("labels").select("*").order("created_at");
+  const b = await sb.from("rules").select("*").order("updated_at", { ascending: false });
+  labels = a.data || []; rules = b.data || []; render();
+}
+function render(){
+  const q = $("q").value.trim().toLowerCase();
+  const list = rules.filter(r => {
+    if ($("bmOnly").checked && !bookmarks.has(r.id)) return false;
+    if (!q) return true;
+    const l = labelOf(r);
+    return (r.title + " " + r.body + " " + (l ? l.name : "") + " " + (r.tags || "")).toLowerCase().includes(q);
+  });
+  $("empty").style.display = rules.length ? "none" : "block";
+  $("grid").innerHTML = list.map(r =>
+    '<button class="card" data-open="' + r.id + '"><span class="star' + (bookmarks.has(r.id) ? " on" : "") + '" data-star="' + r.id + '">★</span><h3>' + esc(r.title) + "</h3>" + chipHtml(r) +
+    '<div style="color:#8a6b7a;font-size:14px;margin-top:8px">' + sanitizeHtml(r.body) + "</div></button>").join("");
+}
+$("q").addEventListener("input", render);
+$("bmOnly").addEventListener("change", render);
+$("grid").addEventListener("click", async e => {
+  const star = e.target.closest("[data-star]");
+  if (star){ e.stopPropagation(); const id = star.dataset.star;
+    bookmarks.has(id) ? bookmarks.delete(id) : bookmarks.add(id);
+    localStorage.setItem("dr_bookmarks", JSON.stringify([...bookmarks])); render(); return; }
+  const card = e.target.closest("[data-open]"); if (card) openDetail(card.dataset.open);
+});
+
+async function openDetail(id){
+  const r = rules.find(x => x.id === id); if (!r) return;
+  const c = await sb.from("comments").select("*").eq("rule_id", id).order("created_at");
+  const comments = (c.data || []).map(x => '<div class="comment"><b>' + esc(x.name || "ななし") + "</b>：" + esc(x.body) + "</div>").join("");
+  $("dlg").innerHTML =
+    "<h2>" + esc(r.title) + "</h2>" + chipHtml(r) + '<div style="margin:12px 0">' + sanitizeHtml(r.body) + "</div>" +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="dEdit">編集する</button><button class="btn" id="dDel">削除する</button><button class="btn" id="dClose">閉じる</button></div>' +
+    "<h3>コメント</h3>" + comments +
+    '<input type="text" id="cName" placeholder="名前（任意）" style="width:100%;border:1.5px solid #f3d3de;border-radius:12px;padding:9px 12px;margin-bottom:8px">' +
+    '<textarea id="cBody" rows="2" placeholder="コメントを書く…" style="width:100%;border:1.5px solid #f3d3de;border-radius:12px;padding:9px 12px">' + '</text' + 'area>' +
+    '<div style="margin-top:8px"><button class="btn primary" id="cSend">コメントを残す</button></div>';
+  $("dlg").showModal();
+  $("dClose").onclick = () => $("dlg").close();
+  $("dDel").onclick = async () => { if ($("dDel").dataset.armed) { await sb.from("rules").delete().eq("id", id); $("dlg").close(); load(); } else { $("dDel").dataset.armed = "1"; $("dDel").textContent = "本当に削除する？"; } };
+  $("dEdit").onclick = () => { $("dlg").close(); openEditor(r); };
+  $("cSend").onclick = async () => { const body = $("cBody").value.trim(); if (!body) return;
+    await sb.from("comments").insert({ rule_id: id, name: $("cName").value.trim(), body }); openDetail(id); };
+}
+
+function labelOptions(cat, selected){
+  const opts = labels.filter(l => l.category === cat);
+  return '<option value="">（名前なし）</option>' + opts.map(l => '<option value="' + l.id + '"' + (l.id === selected ? " selected" : "") + ">" + esc(l.name) + "</option>").join("");
+}
+function openEditor(r){
+  const isNew = !r; r = r || { title: "", category: "client", label_id: "", body: "", tags: "" };
+  $("dlg").innerHTML =
+    "<h2>" + (isNew ? "ルールを追加" : "ルールを編集") + "</h2>" +
+    '<div class="field"><label>ルール名</label><input type="text" id="fTitle" value="' + esc(r.title) + '"></div>' +
+    '<div class="field"><label>区分</label><select id="fCat">' + Object.keys(CATS).map(k => '<option value="' + k + '"' + (r.category === k ? " selected" : "") + ">" + CATS[k] + "</option>").join("") + "</select></div>" +
+    '<div class="field"><label>ラベル（名前）</label><select id="fLabel">' + labelOptions(r.category, r.label_id) + "</select></div>" +
+    '<div class="field"><label>ルールの内容</label><div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap">' +
+    '<button class="btn" id="tBold" type="button"><b>B</b></button>' +
+    '<label style="font-size:13px">文字色 <input type="color" id="tColor" value="#e0527e"></label>' +
+    '<select id="tSize"><option value="">サイズ</option><option value="13px">小</option><option value="15px">ふつう</option><option value="19px">大</option><option value="24px">特大</option></select>' +
+    '<button class="btn" id="tImg" type="button">画像を入れる</button><input type="file" id="tFile" accept="image/*" hidden></div>' +
+    '<div class="editor" id="fBody" contenteditable="true">' + r.body + "</div></div>" +
+    '<div class="field"><label>タグ（カンマ区切り・任意）</label><input type="text" id="fTags" value="' + esc(r.tags || "") + '"></div>' +
+    '<div style="display:flex;gap:8px"><button class="btn primary" id="fSave">保存する</button><button class="btn" id="fCancel">キャンセル</button></div>';
+  $("dlg").showModal();
+  $("fCat").onchange = () => { $("fLabel").innerHTML = labelOptions($("fCat").value, ""); };
+  const ed = $("fBody");
+  const wrap = style => { const sel = window.getSelection(); if (!sel.rangeCount || sel.isCollapsed) return;
+    const range = sel.getRangeAt(0); const span = document.createElement("span"); span.setAttribute("style", style);
+    try { range.surroundContents(span); } catch (err) { span.appendChild(range.extractContents()); range.insertNode(span); } sel.removeAllRanges(); ed.focus(); };
+  $("tBold").onclick = () => document.execCommand("bold");
+  $("tColor").oninput = e => wrap("color:" + e.target.value);
+  $("tSize").onchange = e => { if (e.target.value) wrap("font-size:" + e.target.value); e.target.value = ""; };
+  $("tImg").onclick = () => $("tFile").click();
+  $("tFile").onchange = () => { const f = $("tFile").files[0]; if (!f) return; const rd = new FileReader();
+    rd.onload = () => { ed.focus(); document.execCommand("insertHTML", false, '<img src="' + rd.result + '">'); }; rd.readAsDataURL(f); };
+  $("fCancel").onclick = () => $("dlg").close();
+  $("fSave").onclick = async () => {
+    const payload = { title: $("fTitle").value.trim(), category: $("fCat").value,
+      label_id: $("fLabel").value || null, body: ed.innerHTML, tags: $("fTags").value.trim(), updated_at: new Date().toISOString() };
+    if (!payload.title) { $("fTitle").style.borderColor = "#d33"; $("fTitle").focus(); return; }
+    if (isNew) await sb.from("rules").insert(payload); else await sb.from("rules").update(payload).eq("id", r.id);
+    $("dlg").close(); load();
+  };
+}
+$("addBtn").onclick = () => openEditor(null);
+
+$("labelBtn").onclick = () => {
+  const secs = Object.keys(CATS).map(cat =>
+    "<h3>" + CATS[cat] + "</h3>" + labels.filter(l => l.category === cat).map(l =>
+      '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><span class="chip" style="background:' + (l.color || autoColor(l.name)) + '">' + esc(l.name) + '</span>' +
+      '<input type="color" data-color="' + l.id + '" value="' + (l.color || "#ffd9e6") + '">' +
+      '<button class="btn" data-del-label="' + l.id + '">削除</button></div>').join("") +
+    '<div style="display:flex;gap:6px;margin-bottom:16px"><input type="text" id="new-' + cat + '" placeholder="名前を追加" style="flex:1;border:1.5px solid #f3d3de;border-radius:12px;padding:9px 12px"><button class="btn" data-add-label="' + cat + '">追加</button></div>').join("");
+  $("dlg").innerHTML = "<h2>ラベル管理</h2>" + secs + '<button class="btn" onclick="document.getElementById(\'dlg\').close()">閉じる</button>';
+  $("dlg").showModal();
+  $("dlg").querySelectorAll("[data-add-label]").forEach(b => b.onclick = async () => {
+    const name = $("new-" + b.dataset.addLabel).value.trim(); if (!name) return;
+    await sb.from("labels").insert({ category: b.dataset.addLabel, name }); load(); $("labelBtn").click(); });
+  $("dlg").querySelectorAll("[data-del-label]").forEach(b => b.onclick = async () => {
+    if (b.dataset.armed) { await sb.from("labels").delete().eq("id", b.dataset.delLabel); load(); $("labelBtn").click(); } else { b.dataset.armed = "1"; b.textContent = "本当に削除？"; } });
+  $("dlg").querySelectorAll("[data-color]").forEach(inp => inp.onchange = async () => {
+    await sb.from("labels").update({ color: inp.value }).eq("id", inp.dataset.color); load(); });
+};
+load();
+</script>
+</body>
+</html>
+</textarea>
+
+<script>
+"use strict";
+/* ---------- 状態（このプレビュー内でのみ保持） ---------- */
+const CATS = { client:"クライアント", maker:"生産先", internal:"社内（ルール）" };
+const PALETTE = ["#ffd9e6","#ffe9c9","#fff3a6","#d9f2c2","#c6ecdc","#cfe6ff","#ded5ff","#f8cfe9"];
+const state = {
+  labels: [
+    { id:"l1", cat:"client", name:"YDB", color:null },
+    { id:"l2", cat:"client", name:"GCT", color:null }
+  ],
+  rules: [],           // {id,title,cat,labelId,body,tags,updatedAt,bookmarked}
+  comments: {},        // ruleId -> [{name,text,at}]
+  filterCat: "all",
+  filterLabel: "",
+  view: "card",
+  currentId: null,
+  editingId: null
+};
+let uid = 100;
+const nextId = p => p + (++uid);
+const $ = id => document.getElementById(id);
+const esc = s => (s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function autoColor(name){ let h=0; for(const ch of name) h=(h*31+ch.charCodeAt(0))>>>0; return PALETTE[h%PALETTE.length]; }
+function labelById(id){ return state.labels.find(l=>l.id===id); }
+function labelColor(l){ return l.color || autoColor(l.name); }
+function chipHtml(r){
+  const l = r.labelId ? labelById(r.labelId) : null;
+  if(!l) return '<span class="label-chip" style="background:#ffeef4"><span class="cat">'+CATS[r.cat]+'</span></span>';
+  return '<span class="label-chip" style="background:'+labelColor(l)+'"><span class="cat">'+CATS[r.cat]+'</span>'+esc(l.name)+'</span>';
+}
+function fmtDate(ts){ const d=new Date(ts); return d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate(); }
+function sanitizeHtml(html){
+  const tpl = document.createElement("template"); tpl.innerHTML = html || "";
+  const allowed = { B:1, STRONG:1, I:1, EM:1, U:1, SPAN:1, FONT:1, P:1, BR:1, DIV:1, IMG:1, UL:1, OL:1, LI:1 };
+  const walk = node => { [...node.childNodes].forEach(ch => {
+    if(ch.nodeType !== 1) return;
+    if(!allowed[ch.tagName]){ walk(ch); ch.replaceWith(...ch.childNodes); return; }
+    [...ch.attributes].forEach(a => { const n = a.name.toLowerCase();
+      if(ch.tagName === "IMG" && n === "src" && /^(https?:|data:image\/)/i.test(a.value)) return;
+      if(ch.tagName === "IMG" && n === "alt") return;
+      if(n === "style"){ const safe = a.value.split(";").map(s=>s.trim()).filter(s=>/^(color|font-size|font-weight|font-style|text-decoration)\s*:/i.test(s) && !/url\(|expression/i.test(s)).join("; ");
+        if(safe) ch.setAttribute("style", safe); else ch.removeAttribute("style"); return; }
+      if(ch.tagName === "FONT" && (n === "color" || n === "size")) return;
+      ch.removeAttribute(a.name); });
+    walk(ch); }); };
+  walk(tpl.content); return tpl.innerHTML;
+}
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
+
+/* ---------- 一覧 ---------- */
+function filtered(){
+  const q = $("searchInput").value.trim().toLowerCase();
+  return state.rules.filter(r=>{
+    if(state.filterCat==="bookmark" && !r.bookmarked) return false;
+    if(state.filterCat!=="all" && state.filterCat!=="bookmark" && r.cat!==state.filterCat) return false;
+    if(state.filterLabel && r.labelId!==state.filterLabel) return false;
+    if(!q) return true;
+    const l = r.labelId ? labelById(r.labelId) : null;
+    const text = (r.title+" "+r.body.replace(/<[^>]+>/g," ")+" "+(l?l.name:"")+" "+(r.tags||"")).toLowerCase();
+    return text.includes(q);
+  });
+}
+function render(){
+  // ラベル絞り込みの選択肢
+  const sel = $("labelFilter");
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">ラベル：すべて</option>' + state.labels.map(l=>
+    '<option value="'+l.id+'">'+CATS[l.cat]+"："+esc(l.name)+"</option>").join("");
+  sel.value = state.labels.some(l=>l.id===cur) ? cur : "";
+  state.filterLabel = sel.value;
+
+  const list = filtered();
+  $("countLine").textContent = state.rules.length===0 ? "" : "ルール "+list.length+" 件 / 全 "+state.rules.length+" 件";
+  const box = $("results");
+  if(state.rules.length===0){
+    box.innerHTML = '<div class="empty"><p class="big">まだルールがないよ</p><p>「＋ ルールを追加」から、1件目のデザインルールを登録してみてね。<br>ラベル（クライアント名・生産先名）は「ラベル管理」から追加できるよ。</p><button class="btn primary" type="button" onclick="openEditor(null)">＋ 最初のルールを追加</button></div>';
+    return;
+  }
+  if(list.length===0){
+    box.innerHTML = '<div class="empty"><p class="big">見つからなかったよ</p><p>検索のことばや絞り込みを変えてみてね。</p></div>';
+    return;
+  }
+  if(state.view==="card"){
+    box.innerHTML = '<div class="grid">'+list.map(r=>{
+      const cc = (state.comments[r.id]||[]).length;
+      return '<article class="card" data-open="'+r.id+'"><h3>'+esc(r.title)+'</h3>'
+        +'<div>'+chipHtml(r)+'</div>'
+        +'<div class="body-preview">'+sanitizeHtml(r.body||"")+'</div>'
+        +'<div class="card-foot"><span>'+fmtDate(r.updatedAt)+' 更新</span>'
+        +'<span class="comment-count">💬 '+cc+'</span>'
+        +'<button class="star-btn'+(r.bookmarked?" on":"")+'" data-star="'+r.id+'" type="button" aria-label="ブックマーク">'+(r.bookmarked?"★":"☆")+'</button></div></article>';
+    }).join("")+"</div>";
+  } else {
+    box.innerHTML = '<div class="list-view">'+list.map(r=>{
+      const cc = (state.comments[r.id]||[]).length;
+      return '<article class="list-row" data-open="'+r.id+'"><h3>'+esc(r.title)+'</h3>'+chipHtml(r)
+        +'<span class="comment-count">💬 '+cc+'</span><span class="date">'+fmtDate(r.updatedAt)+' 更新</span>'
+        +'<button class="star-btn'+(r.bookmarked?" on":"")+'" data-star="'+r.id+'" type="button" aria-label="ブックマーク">'+(r.bookmarked?"★":"☆")+'</button></article>';
+    }).join("")+"</div>";
+  }
+}
+$("results").addEventListener("click", e=>{
+  const star = e.target.closest("[data-star]");
+  if(star){ e.stopPropagation(); const r = state.rules.find(x=>x.id===star.dataset.star); if(r){ r.bookmarked=!r.bookmarked; render(); } return; }
+  const card = e.target.closest("[data-open]");
+  if(card) openDetail(card.dataset.open);
+});
+$("searchInput").addEventListener("input", render);
+$("labelFilter").addEventListener("change", e=>{ state.filterLabel=e.target.value; render(); });
+document.querySelectorAll(".chip-btn").forEach(b=>b.addEventListener("click", ()=>{
+  document.querySelectorAll(".chip-btn").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); state.filterCat=b.dataset.cat; render();
+}));
+$("viewCard").addEventListener("click", ()=>{ state.view="card"; $("viewCard").classList.add("on"); $("viewList").classList.remove("on"); render(); });
+$("viewList").addEventListener("click", ()=>{ state.view="list"; $("viewList").classList.add("on"); $("viewCard").classList.remove("on"); render(); });
+
+/* ---------- モーダル共通 ---------- */
+function openOv(id){ $(id).classList.add("open"); }
+function closeOv(id){ $(id).classList.remove("open"); }
+document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click", ()=>closeOv(b.dataset.close)));
+document.querySelectorAll(".overlay").forEach(ov=>ov.addEventListener("click", e=>{ if(e.target===ov) ov.classList.remove("open"); }));
+let confirmResolve = null;
+function askConfirm(msg){ $("confirmMsg").textContent = msg; openOv("confirmOverlay"); return new Promise(res=>{ confirmResolve = res; }); }
+$("confirmYes").addEventListener("click", ()=>{ closeOv("confirmOverlay"); if(confirmResolve) confirmResolve(true); });
+$("confirmNo").addEventListener("click", ()=>{ closeOv("confirmOverlay"); if(confirmResolve) confirmResolve(false); });
+
+/* ---------- 詳細 ---------- */
+function openDetail(id){
+  const r = state.rules.find(x=>x.id===id); if(!r) return;
+  state.currentId = id;
+  $("dTitle").textContent = r.title;
+  $("dChip").innerHTML = chipHtml(r);
+  $("dDate").textContent = fmtDate(r.updatedAt)+" 更新";
+  $("dBody").innerHTML = sanitizeHtml(r.body || "");
+  $("dBookmark").textContent = r.bookmarked ? "★ ブックマーク中" : "☆ ブックマーク";
+  renderComments();
+  openOv("detailOverlay");
+}
+function renderComments(){
+  const list = state.comments[state.currentId]||[];
+  $("commentList").innerHTML = list.length===0
+    ? '<p style="color:var(--ink-soft);font-size:13.5px">まだコメントはないよ。気づいたことを残してね。</p>'
+    : list.map(c=>'<div class="comment"><div class="c-head"><span class="c-name">'+esc(c.name||"ななし")+'</span><span>'+fmtDate(c.at)+'</span></div><p>'+esc(c.text)+"</p></div>").join("");
+}
+$("dBookmark").addEventListener("click", ()=>{
+  const r = state.rules.find(x=>x.id===state.currentId); if(!r) return;
+  r.bookmarked=!r.bookmarked; $("dBookmark").textContent = r.bookmarked ? "★ ブックマーク中" : "☆ ブックマーク"; render();
+});
+$("dDelete").addEventListener("click", async ()=>{
+  if(!await askConfirm("このルールを削除する？")) return;
+  state.rules = state.rules.filter(x=>x.id!==state.currentId);
+  delete state.comments[state.currentId];
+  closeOv("detailOverlay"); render(); toast("削除したよ");
+});
+$("dEdit").addEventListener("click", ()=>{ closeOv("detailOverlay"); openEditor(state.currentId); });
+$("commentForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const text = $("commentText").value.trim(); if(!text) return;
+  (state.comments[state.currentId] = state.comments[state.currentId]||[]).push({ name:$("commentName").value.trim(), text, at:Date.now() });
+  $("commentText").value=""; renderComments(); render(); toast("コメントを残したよ");
+});
+
+/* ---------- 追加・編集 ---------- */
+function fillLabelSelect(){
+  const cat = $("fCat").value;
+  const opts = state.labels.filter(l=>l.cat===cat);
+  $("fLabel").innerHTML = '<option value="">（名前なし）</option>' + opts.map(l=>'<option value="'+l.id+'">'+esc(l.name)+"</option>").join("");
+}
+$("fCat").addEventListener("change", fillLabelSelect);
+function openEditor(id){
+  const r = id ? state.rules.find(x=>x.id===id) : null;
+  state.editingId = id || null;
+  $("eTitle").textContent = r ? "ルールを編集" : "ルールを追加";
+  $("fTitle").value = r ? r.title : "";
+  $("fCat").value = r ? r.cat : "client";
+  fillLabelSelect();
+  $("fLabel").value = r && r.labelId ? r.labelId : "";
+  $("fBody").innerHTML = r ? sanitizeHtml(r.body) : "";
+  $("fTags").value = r ? (r.tags||"") : "";
+  openOv("editorOverlay");
+}
+$("addRuleBtn").addEventListener("click", ()=>openEditor(null));
+$("ruleForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const title = $("fTitle").value.trim(); if(!title) return;
+  const data = { title, cat:$("fCat").value, labelId:$("fLabel").value||null, body:sanitizeHtml($("fBody").innerHTML), tags:$("fTags").value.trim(), updatedAt:Date.now() };
+  if(state.editingId){
+    Object.assign(state.rules.find(x=>x.id===state.editingId), data);
+    toast("更新したよ");
+  } else {
+    state.rules.unshift(Object.assign({ id:nextId("r"), bookmarked:false }, data));
+    toast("ルールを追加したよ");
+  }
+  closeOv("editorOverlay"); render();
+});
+
+/* リッチテキスト操作 */
+let savedRange = null;
+function saveRange(){ const s=window.getSelection(); if(s.rangeCount && $("fBody").contains(s.anchorNode)) savedRange=s.getRangeAt(0).cloneRange(); }
+$("fBody").addEventListener("keyup", saveRange);
+$("fBody").addEventListener("mouseup", saveRange);
+function wrapSelection(style){
+  const ed = $("fBody"); ed.focus();
+  const s = window.getSelection();
+  if(savedRange){ s.removeAllRanges(); s.addRange(savedRange); }
+  if(!s.rangeCount || s.isCollapsed){ toast("先に文字を選んでね"); return; }
+  const range = s.getRangeAt(0);
+  const span = document.createElement("span"); span.setAttribute("style", style);
+  try{ range.surroundContents(span); }
+  catch(err){ span.appendChild(range.extractContents()); range.insertNode(span); }
+  s.removeAllRanges(); saveRange();
+}
+$("boldBtn").addEventListener("mousedown", e=>{ e.preventDefault(); document.execCommand("bold"); saveRange(); });
+$("foreColor").addEventListener("input", e=>wrapSelection("color:"+e.target.value));
+$("fontSizeSel").addEventListener("change", e=>{ if(e.target.value) wrapSelection("font-size:"+e.target.value); e.target.value=""; });
+$("imgBtn").addEventListener("click", ()=>$("imgFile").click());
+$("imgFile").addEventListener("change", ()=>{
+  const f = $("imgFile").files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=>{ $("fBody").focus(); document.execCommand("insertHTML", false, '<img src="'+rd.result+'" alt="本文の画像">'); };
+  rd.readAsDataURL(f); $("imgFile").value="";
+});
+
+/* ---------- ラベル管理 ---------- */
+function renderLabels(){
+  $("labelSections").innerHTML = Object.keys(CATS).map(cat=>{
+    const rows = state.labels.filter(l=>l.cat===cat).map(l=>
+      '<div class="label-row"><span class="label-chip" style="background:'+labelColor(l)+'">'+esc(l.name)+'</span>'
+      +'<span class="swatches">'+PALETTE.map(c=>'<button class="swatch'+(labelColor(l)===c?" on":"")+'" data-color-for="'+l.id+'" data-color="'+c+'" style="background:'+c+'" type="button" aria-label="色を選ぶ"></button>').join("")+'</span>'
+      +'<input type="color" data-picker-for="'+l.id+'" value="'+(l.color||"#ffd9e6")+'" aria-label="カラーサークルで色を選ぶ">'
+      +'<button class="mini-btn" data-auto-for="'+l.id+'" type="button">自動の色に戻す</button>'
+      +'<button class="mini-btn danger" data-del-label="'+l.id+'" type="button">削除</button></div>').join("");
+    return '<div class="label-section"><h3>'+CATS[cat]+"</h3>"+(rows||'<p style="color:var(--ink-soft);font-size:13px;margin:0 0 8px">まだ名前がないよ</p>')
+      +'<div class="add-label-row"><input type="text" id="newLabel-'+cat+'" placeholder="名前を追加（例：'+(cat==="client"?"クライアント名":cat==="maker"?"生産先名":"社内ラベル名")+'）"><button class="btn" data-add-label="'+cat+'" type="button">追加</button></div></div>';
+  }).join("");
+}
+$("labelSections").addEventListener("click", async e=>{
+  const add = e.target.closest("[data-add-label]");
+  if(add){ const inp = $("newLabel-"+add.dataset.addLabel); const name = inp.value.trim(); if(!name) return;
+    state.labels.push({ id:nextId("l"), cat:add.dataset.addLabel, name, color:null }); renderLabels(); render(); toast("ラベルを追加したよ"); return; }
+  const del = e.target.closest("[data-del-label]");
+  if(del){ if(!await askConfirm("このラベルを削除する？（ルール自体は残るよ）")) return;
+    state.labels = state.labels.filter(l=>l.id!==del.dataset.delLabel);
+    state.rules.forEach(r=>{ if(r.labelId===del.dataset.delLabel) r.labelId=null; });
+    renderLabels(); render(); return; }
+  const sw = e.target.closest("[data-color-for]");
+  if(sw){ const l = labelById(sw.dataset.colorFor); if(l){ l.color = sw.dataset.color; renderLabels(); render(); } return; }
+  const au = e.target.closest("[data-auto-for]");
+  if(au){ const l = labelById(au.dataset.autoFor); if(l){ l.color=null; renderLabels(); render(); } }
+});
+$("labelSections").addEventListener("input", e=>{
+  const p = e.target.closest("[data-picker-for]"); if(!p) return;
+  const l = labelById(p.dataset.pickerFor); if(l){ l.color = p.value; renderLabels(); render(); }
+});
+$("labelManageBtn").addEventListener("click", ()=>{ renderLabels(); openOv("labelOverlay"); });
+
+/* ---------- GitHub用コード ---------- */
+const SQL_TEXT = [
+"-- デザインルール表：Supabase セットアップ用SQL",
+"-- Supabase の SQL Editor に貼って実行してね",
+"",
+"create table if not exists labels (",
+"  id uuid primary key default gen_random_uuid(),",
+"  category text not null check (category in ('client','maker','internal')),",
+"  name text not null,",
+"  color text,",
+"  created_at timestamptz not null default now()",
+");",
+"",
+"create table if not exists rules (",
+"  id uuid primary key default gen_random_uuid(),",
+"  title text not null,",
+"  category text not null check (category in ('client','maker','internal')),",
+"  label_id uuid references labels(id) on delete set null,",
+"  body text not null default '',",
+"  tags text not null default '',",
+"  created_at timestamptz not null default now(),",
+"  updated_at timestamptz not null default now()",
+");",
+"",
+"create table if not exists comments (",
+"  id uuid primary key default gen_random_uuid(),",
+"  rule_id uuid not null references rules(id) on delete cascade,",
+"  name text not null default '',",
+"  body text not null,",
+"  created_at timestamptz not null default now()",
+");",
+"",
+"-- みんなが見て・編集できるようにする設定（会社の内輪用）",
+"alter table labels enable row level security;",
+"alter table rules enable row level security;",
+"alter table comments enable row level security;",
+"create policy \"anyone can read and write\" on labels for all using (true) with check (true);",
+"create policy \"anyone can read and write\" on rules for all using (true) with check (true);",
+"create policy \"anyone can read and write\" on comments for all using (true) with check (true);"
+].join("\n");
+$("sqlView").textContent = SQL_TEXT;
+const GH_CODE = $("ghCodeStore").value.replace(/^\n/, "");
+$("codeView").textContent = GH_CODE;
+$("copySqlBtn").addEventListener("click", async ()=>{
+  try{ await navigator.clipboard.writeText(SQL_TEXT); toast("SQLをコピーしたよ"); }
+  catch(err){ toast("コピーできなかった…SQLの枠から手でコピーしてね"); }
+});
+$("copyCodeBtn").addEventListener("click", async ()=>{
+  try{ await navigator.clipboard.writeText(GH_CODE); toast("コードをコピーしたよ"); }
+  catch(err){ toast("コピーできなかった…ダウンロードを使ってね"); }
+});
+$("downloadCodeBtn").addEventListener("click", ()=>{
+  const blob = new Blob([GH_CODE], { type:"text/html;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "index.html"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 3000);
+  toast("index.html をダウンロードしたよ");
+});
+
+render();
+</script>
+</body>
+</html>
