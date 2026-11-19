@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>デザインルール</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;background:#f0f8ff;color:#2e3d4d;margin:0;line-height:1.65}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 64px}
+h1{font-size:36px;font-weight:900;margin:10px 0 0}
+.sub{color:#6b7f8f;margin:4px 0 16px}
+input,select,textarea,button{font:inherit}
+.btn{border:1.5px solid #c4e2f5;background:#fff;border-radius:999px;padding:8px 18px;font-weight:700;cursor:pointer;min-height:2.25rem}
+.btn.primary{background:#2f8fd0;border-color:#2f8fd0;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:14px}
+.card{background:#fff;border:1.5px solid #c4e2f5;border-radius:20px;padding:18px;cursor:pointer;text-align:left;width:100%;height:100%;box-sizing:border-box}
+.card h3{flex:1;margin:0 0 8px;font-size:17px;line-height:1.5;min-height:3em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.chip{display:inline-block;border-radius:999px;padding:3px 12px;font-size:12.5px;font-weight:700}
+.chead{display:flex;align-items:flex-start;gap:6px}
+.star{flex:none;border:0;background:none;font-size:20px;line-height:1.3;cursor:pointer;color:#bcd6e6;padding:0}
+.star.on{color:#f5a623}
+.search{width:100%;border:1.5px solid #c4e2f5;border-radius:999px;padding:10px 18px;background:#fff}
+dialog{border:1.5px solid #c4e2f5;border-radius:20px;max-width:640px;width:92vw}
+dialog img{max-width:100%;border-radius:10px}
+.editor{border:1.5px solid #c4e2f5;border-radius:12px;min-height:150px;padding:12px;background:#fff}
+.field{margin-bottom:14px}
+.field label{display:block;font-weight:700;font-size:13.5px;margin-bottom:5px}
+.field input[type=text],.field select,.field textarea{width:100%;border:1.5px solid #c4e2f5;border-radius:12px;padding:9px 12px}
+.comment{background:#eaf5fd;border-radius:12px;padding:8px 12px;margin-bottom:8px;font-size:14px}
+.card{position:relative}
+.card img,.editor img{max-width:180px;max-height:180px;width:auto;height:auto;border-radius:8px;cursor:zoom-in}
+dialog img{max-width:220px;max-height:220px;width:auto;height:auto;cursor:zoom-in}
+dialog img.zoom{max-width:100%;max-height:none;cursor:zoom-out}
+.editor img{cursor:default}
+.del{flex:none;font-size:11.5px;font-weight:700;color:#2f7fb8;background:#eaf5fd;border:1.5px solid #c4e2f5;border-radius:999px;padding:2px 10px;cursor:pointer;margin-top:2px}
+.del.armed{background:#e5484d;color:#fff;border-color:#e5484d}
+.cdel{float:right;font-size:11px;font-weight:700;color:#2f7fb8;background:#fff;border:1.5px solid #c4e2f5;border-radius:999px;padding:1px 8px;cursor:pointer}
+.cdel.armed{background:#e5484d;color:#fff;border-color:#e5484d}
+.xbtn{float:right;border:0;background:none;font-size:24px;line-height:1;cursor:pointer;color:#6b7f8f;padding:2px 6px}
+#lock{position:fixed;inset:0;background:#f0f8ff;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+.lockbox{background:#fff;border:1.5px solid #c4e2f5;border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;box-sizing:border-box}
+.lockbox input{width:100%;box-sizing:border-box;border:1.5px solid #c4e2f5;border-radius:12px;padding:10px 12px;margin:10px 0}
+#lightbox{position:fixed;inset:0;background:rgba(30,10,20,.85);display:none;align-items:center;justify-content:center;z-index:60;cursor:zoom-out}
+#lightbox.open{display:flex}
+#lightbox img{max-width:94vw;max-height:92vh;border-radius:10px}
+</style>
+</head>
+<body>
+<div id="lock"><div class="lockbox">
+  <h2 style="margin:0 0 4px">デザインルール</h2>
+  <p style="color:#6b7f8f;margin:0">パスワードを入れてね</p>
+  <input type="password" id="pw" placeholder="パスワード">
+  <button class="btn primary" id="pwBtn" style="width:100%">開く</button>
+  <p id="pwMsg" style="color:#e5484d;min-height:1.2em;margin:8px 0 0"></p>
+</div></div>
+<div class="wrap">
+  <h1>デザインルール</h1>
+  <p class="sub">デザインする時のルールを検索できるよ。</p>
+  <input class="search" id="q" type="search" placeholder="ルール名・内容・ラベルで検索…">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+    <button class="btn" id="labelBtn">ラベル管理</button>
+    <button class="btn primary" id="addBtn">＋ ルールを追加</button>
+    <button class="btn" id="bmBtn">★ ブックマーク</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p id="empty" style="color:#6b7f8f;display:none">まだルールがないよ。「＋ ルールを追加」から1件目を登録してね。</p>
+</div>
+
+<div id="lightbox"><img id="lbImg" alt=""></div>
+<dialog id="dlg"></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ★ここに自分のSupabaseの値を入れてね（Settings → API）
+const SUPABASE_URL = "https://gfyfnrkksmwtfzbjhqyc.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_N49GordyoH-wLJ-ko6SndA_me1W5dLm";
+let sb = null;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch (e) { sb = null; }
+
+const CATS = { client: "クライアント", maker: "生産先", internal: "社内（ルール）" };
+const PALETTE = ["#ffd9e6","#ffe9c9","#fff7ae","#d8f3c5","#c9ecdf","#cfe8ff","#ddd6fe","#f6d3ea"];
+let labels = [], rules = [], bookmarks = new Set(JSON.parse(localStorage.getItem("dr_bookmarks") || "[]"));
+const $ = id => document.getElementById(id);
+const esc = s => (s || "").replace(/&/g, "&" + "amp;").replace(/</g, "&" + "lt;").replace(/>/g, "&" + "gt;");
+function sanitizeHtml(html){
+  const tpl = document.createElement("template"); tpl.innerHTML = html || "";
+  const allowed = { B:1, STRONG:1, I:1, EM:1, U:1, SPAN:1, FONT:1, P:1, BR:1, DIV:1, IMG:1, UL:1, OL:1, LI:1 };
+  const walk = node => { [...node.childNodes].forEach(ch => {
+    if (ch.nodeType !== 1) return;
+    if (!allowed[ch.tagName]) { walk(ch); ch.replaceWith(...ch.childNodes); return; }
+    [...ch.attributes].forEach(a => { const n = a.name.toLowerCase();
+      if (ch.tagName === "IMG" && n === "src" && /^(https?:|data:image\/)/i.test(a.value)) return;
+      if (ch.tagName === "IMG" && n === "alt") return;
+      if (n === "style") { const safe = a.value.split(";").map(s => s.trim()).filter(s => /^(color|font-size|font-weight|font-style|text-decoration)\s*:/i.test(s) && !/url\(|expression/i.test(s)).join("; ");
+        if (safe) ch.setAttribute("style", safe); else ch.removeAttribute("style"); return; }
+      if (ch.tagName === "FONT" && (n === "color" || n === "size")) return;
+      ch.removeAttribute(a.name); });
+    walk(ch); }); };
+  walk(tpl.content); return tpl.innerHTML;
+}
+function autoColor(name){ let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; }
+function labelOf(r){ return labels.find(l => l.id === r.label_id); }
+function chipHtml(r){ const l = labelOf(r); if (!l) return '<span class="chip" style="background:#eaf5fd">' + CATS[r.category] + "</span>";
+  return '<span class="chip" style="background:' + (l.color || autoColor(l.name)) + '">' + CATS[r.category] + "：" + esc(l.name) + "</span>"; }
+
+async function load(){
+  if (!sb) { $("empty").textContent = "まず index.html の冒頭に、自分の Supabase の URL とキー（Publishable key）を入れてね。"; $("empty").style.display = "block"; return; }
+  try {
+    const a = await sb.from("labels").select("*").order("created_at");
+    const b = await sb.from("rules").select("*").order("updated_at", { ascending: false });
+    labels = a.data || []; rules = b.data || []; render();
+  } catch (e) { $("empty").textContent = "Supabase につながらなかった…URLとキーが合っているか確認してね。"; $("empty").style.display = "block"; }
+}
+let bmOnly = false;
+function render(){
+  const q = $("q").value.trim().toLowerCase();
+  const list = rules.filter(r => {
+    if (bmOnly && !bookmarks.has(r.id)) return false;
+    if (!q) return true;
+    const l = labelOf(r);
+    return (r.title + " " + r.body + " " + (l ? l.name : "") + " " + (r.tags || "")).toLowerCase().includes(q);
+  });
+  $("empty").style.display = rules.length ? "none" : "block";
+  $("grid").innerHTML = list.map(r =>
+    '<button class="card" data-open="' + r.id + '"><span class="chead"><h3>' + esc(r.title) + '</h3><span class="del" data-del="' + r.id + '">削除</span><span class="star' + (bookmarks.has(r.id) ? " on" : "") + '" data-star="' + r.id + '">★</span></span>' + chipHtml(r) +
+    '<div style="color:#6b7f8f;font-size:14px;margin-top:8px">' + sanitizeHtml(r.body) + "</div></button>").join("");
+}
+$("q").addEventListener("input", render);
+$("bmBtn").addEventListener("click", () => { bmOnly = !bmOnly; $("bmBtn").classList.toggle("primary", bmOnly); render(); });
+function openLb(src){ $("lbImg").src = src; $("lightbox").classList.add("open"); }
+$("lightbox").addEventListener("click", () => { $("lightbox").classList.remove("open"); $("lbImg").src = ""; });
+$("dlg").addEventListener("click", async e => {
+  const cd = e.target.closest("[data-cdel]");
+  if (cd){ e.stopPropagation();
+    if (cd.dataset.armed){ await sb.from("comments").delete().eq("id", cd.dataset.cdel); openDetail($("dlg").dataset.ruleId); }
+    else { cd.dataset.armed = "1"; cd.classList.add("armed"); cd.textContent = "本当に削除？";
+      setTimeout(() => { if (cd.isConnected){ delete cd.dataset.armed; cd.classList.remove("armed"); cd.textContent = "削除"; } }, 3000); }
+    return; }
+  const im = e.target.closest("img"); if (im && !im.closest(".editor")) im.classList.toggle("zoom"); });
+$("grid").addEventListener("click", async e => {
+  const del = e.target.closest("[data-del]");
+  if (del){ e.stopPropagation(); const id = del.dataset.del;
+    if (del.dataset.armed){ await sb.from("rules").delete().eq("id", id); load(); }
+    else { del.dataset.armed = "1"; del.classList.add("armed"); del.textContent = "本当に削除？";
+      setTimeout(() => { if (del.isConnected){ delete del.dataset.armed; del.classList.remove("armed"); del.textContent = "削除"; } }, 3000); }
+    return; }
+  const im = e.target.closest("img");
+  if (im){ e.stopPropagation(); openLb(im.src); return; }
+  const star = e.target.closest("[data-star]");
+  if (star){ e.stopPropagation(); const id = star.dataset.star;
+    bookmarks.has(id) ? bookmarks.delete(id) : bookmarks.add(id);
+    localStorage.setItem("dr_bookmarks", JSON.stringify([...bookmarks])); render(); return; }
+  const card = e.target.closest("[data-open]"); if (card) openDetail(card.dataset.open);
+});
+
+async function openDetail(id){
+  const r = rules.find(x => x.id === id); if (!r) return;
+  const c = await sb.from("comments").select("*").eq("rule_id", id).order("created_at");
+  $("dlg").dataset.ruleId = id;
+  const comments = (c.data || []).map(x => '<div class="comment"><button class="cdel" data-cdel="' + x.id + '">削除</button><b>' + esc(x.name || "ななし") + "</b>：" + esc(x.body) + "</div>").join("");
+  $("dlg").innerHTML =
+    '<button class="xbtn" id="dX" aria-label="閉じる">×</button>' +
+    "<h2>" + esc(r.title) + "</h2>" + chipHtml(r) + '<div style="margin:12px 0">' + sanitizeHtml(r.body) + "</div>" +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="dEdit">編集する</button><button class="btn" id="dDel">削除する</button></div>' +
+    "<h3>コメント</h3>" + comments +
+    '<input type="text" id="cName" placeholder="名前（任意）" style="width:100%;border:1.5px solid #c4e2f5;border-radius:12px;padding:9px 12px;margin-bottom:8px">' +
+    '<textarea id="cBody" rows="2" placeholder="コメントを書く…" style="width:100%;border:1.5px solid #c4e2f5;border-radius:12px;padding:9px 12px">' + '</text' + 'area>' +
+    '<div style="margin-top:8px"><button class="btn primary" id="cSend">コメントを残す</button></div>';
+  $("dlg").showModal();
+  $("dX").onclick = () => $("dlg").close();
+  $("dDel").onclick = async () => { if ($("dDel").dataset.armed) { await sb.from("rules").delete().eq("id", id); $("dlg").close(); load(); } else { $("dDel").dataset.armed = "1"; $("dDel").textContent = "本当に削除する？"; } };
+  $("dEdit").onclick = () => { $("dlg").close(); openEditor(r); };
+  $("cSend").onclick = async () => { const body = $("cBody").value.trim(); if (!body) return;
+    await sb.from("comments").insert({ rule_id: id, name: $("cName").value.trim(), body }); openDetail(id); };
+}
+
+function labelOptions(cat, selected){
+  const opts = labels.filter(l => l.category === cat);
+  return '<option value="">（名前なし）</option>' + opts.map(l => '<option value="' + l.id + '"' + (l.id === selected ? " selected" : "") + ">" + esc(l.name) + "</option>").join("");
+}
+function openEditor(r){
+  const isNew = !r; r = r || { title: "", category: "client", label_id: "", body: "", tags: "" };
+  $("dlg").innerHTML =
+    "<h2>" + (isNew ? "ルールを追加" : "ルールを編集") + "</h2>" +
+    '<div class="field"><label>ルール名</label><input type="text" id="fTitle" value="' + esc(r.title) + '"></div>' +
+    '<div class="field"><label>区分</label><select id="fCat">' + Object.keys(CATS).map(k => '<option value="' + k + '"' + (r.category === k ? " selected" : "") + ">" + CATS[k] + "</option>").join("") + "</select></div>" +
+    '<div class="field"><label>ラベル（名前）</label><select id="fLabel">' + labelOptions(r.category, r.label_id) + "</select></div>" +
+    '<div class="field"><label>ルールの内容</label><div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap">' +
+    '<button class="btn" id="tBold" type="button"><b>B</b></button>' +
+    '<label style="font-size:13px">文字色 <input type="color" id="tColor" value="#2f8fd0"></label>' +
+    '<select id="tSize"><option value="">サイズ</option><option value="13px">小</option><option value="15px">ふつう</option><option value="19px">大</option><option value="24px">特大</option></select>' +
+    '<button class="btn" id="tImg" type="button">画像を入れる</button><input type="file" id="tFile" accept="image/*" hidden></div>' +
+    '<div class="editor" id="fBody" contenteditable="true">' + r.body + "</div></div>" +
+    '<div class="field"><label>タグ（カンマ区切り・任意）</label><input type="text" id="fTags" value="' + esc(r.tags || "") + '"></div>' +
+    '<div style="display:flex;gap:8px"><button class="btn primary" id="fSave">保存する</button><button class="btn" id="fCancel">キャンセル</button></div>';
+  $("dlg").showModal();
+  $("fCat").onchange = () => { $("fLabel").innerHTML = labelOptions($("fCat").value, ""); };
+  const ed = $("fBody");
+  const wrap = style => { const sel = window.getSelection(); if (!sel.rangeCount || sel.isCollapsed) return;
+    const range = sel.getRangeAt(0); const span = document.createElement("span"); span.setAttribute("style", style);
+    try { range.surroundContents(span); } catch (err) { span.appendChild(range.extractContents()); range.insertNode(span); } sel.removeAllRanges(); ed.focus(); };
+  $("tBold").onclick = () => document.execCommand("bold");
+  $("tColor").oninput = e => wrap("color:" + e.target.value);
+  $("tSize").onchange = e => { if (e.target.value) wrap("font-size:" + e.target.value); e.target.value = ""; };
+  $("tImg").onclick = () => $("tFile").click();
+  $("tFile").onchange = () => { const f = $("tFile").files[0]; if (!f) return; const rd = new FileReader();
+    rd.onload = () => { ed.focus(); document.execCommand("insertHTML", false, '<img src="' + rd.result + '">'); }; rd.readAsDataURL(f); };
+  $("fCancel").onclick = () => $("dlg").close();
+  $("fSave").onclick = async () => {
+    const payload = { title: $("fTitle").value.trim(), category: $("fCat").value,
+      label_id: $("fLabel").value || null, body: ed.innerHTML, tags: $("fTags").value.trim(), updated_at: new Date().toISOString() };
+    if (!payload.title) { $("fTitle").style.borderColor = "#d33"; $("fTitle").focus(); return; }
+    if (isNew) await sb.from("rules").insert(payload); else await sb.from("rules").update(payload).eq("id", r.id);
+    $("dlg").close(); load();
+  };
+}
+$("addBtn").onclick = () => openEditor(null);
+
+$("labelBtn").onclick = () => {
+  const secs = Object.keys(CATS).map(cat =>
+    '<div class="lsec"><h3>' + CATS[cat] + "</h3>" + labels.filter(l => l.category === cat).map(l =>
+      '<div data-lrow="' + l.id + '" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><span class="chip" style="background:' + (l.color || autoColor(l.name)) + '">' + esc(l.name) + '</span>' +
+      '<input type="color" data-color="' + l.id + '" value="' + (l.color || "#cfe8ff") + '">' +
+      '<button class="btn" data-del-label="' + l.id + '">削除</button></div>').join("") +
+    '<div class="ladd" style="display:flex;gap:6px;margin-bottom:16px"><input type="text" id="new-' + cat + '" placeholder="名前を追加" style="flex:1;border:1.5px solid #c4e2f5;border-radius:12px;padding:9px 12px"><button class="btn" data-add-label="' + cat + '">追加</button></div></div>').join("");
+  $("dlg").innerHTML = "<h2>ラベル管理</h2>" +
+    '<input type="text" id="labelSearch" placeholder="ラベル名で検索…" style="width:100%;box-sizing:border-box;border:1.5px solid #c4e2f5;border-radius:999px;padding:9px 16px;margin-bottom:10px">' +
+    '<div style="max-height:52vh;overflow-y:auto;padding-right:4px">' + secs + "</div>" +
+    '<button class="btn" onclick="document.getElementById(\'dlg\').close()">閉じる</button>';
+  $("dlg").showModal();
+  $("dlg").querySelectorAll("[data-add-label]").forEach(b => b.onclick = async () => {
+    const name = $("new-" + b.dataset.addLabel).value.trim(); if (!name) return;
+    await sb.from("labels").insert({ category: b.dataset.addLabel, name }); load(); $("labelBtn").click(); });
+  $("dlg").querySelectorAll("[data-del-label]").forEach(b => b.onclick = async () => {
+    if (b.dataset.armed) { await sb.from("labels").delete().eq("id", b.dataset.delLabel); load(); $("labelBtn").click(); } else { b.dataset.armed = "1"; b.textContent = "本当に削除？"; } });
+  $("dlg").querySelectorAll("[data-color]").forEach(inp => inp.onchange = async () => {
+    await sb.from("labels").update({ color: inp.value }).eq("id", inp.dataset.color); load(); });
+  $("labelSearch").addEventListener("input", () => {
+    const q = $("labelSearch").value.trim().toLowerCase();
+    $("dlg").querySelectorAll(".lsec").forEach(sec => {
+      let vis = 0;
+      sec.querySelectorAll("[data-lrow]").forEach(row => {
+        const l = labels.find(x => x.id === row.dataset.lrow);
+        const hit = !q || (l && l.name.toLowerCase().includes(q));
+        row.style.display = hit ? "flex" : "none"; if (hit) vis++;
+      });
+      const add = sec.querySelector(".ladd"); if (add) add.style.display = q ? "none" : "flex";
+      sec.style.display = (!q || vis) ? "" : "none";
+    });
+  });
+};
+// かんたんなパスワード画面（目隠し用）
+const PW_HASH = "219c74d07e79871812d8747781819595cf18ac3626d5ff01e0b8eb9dbed092d2";
+async function sha256hex(str){ const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+async function tryUnlock(){
+  const h = await sha256hex($("pw").value);
+  if (h === PW_HASH){ sessionStorage.setItem("dr_unlocked", "1"); $("lock").style.display = "none"; load(); }
+  else { $("pwMsg").textContent = "パスワードが違うよ"; }
+}
+$("pwBtn").addEventListener("click", tryUnlock);
+$("pw").addEventListener("keydown", e => { if (e.key === "Enter") tryUnlock(); });
+if (sessionStorage.getItem("dr_unlocked") === "1"){ $("lock").style.display = "none"; load(); }
+</script>
+</body>
+</html>
