@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>デザインルール</title>
+<title>ルールブック</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;background:#f0f8ff;color:#2e3d4d;margin:0;line-height:1.65}
@@ -48,15 +48,15 @@ dialog img.zoom{max-width:100%;max-height:none;cursor:zoom-out}
 </head>
 <body>
 <div id="lock"><div class="lockbox">
-  <h2 style="margin:0 0 4px">デザインルール</h2>
+  <h2 style="margin:0 0 4px">ルールブック</h2>
   <p style="color:#6b7f8f;margin:0">パスワードを入れてね</p>
-  <input type="password" id="pw" placeholder="パスワード">
+  <input type="password" id="pw" placeholder="パスワード" autocapitalize="none" autocorrect="off" autocomplete="off">
   <button class="btn primary" id="pwBtn" style="width:100%">開く</button>
   <p id="pwMsg" style="color:#e5484d;min-height:1.2em;margin:8px 0 0"></p>
 </div></div>
 <div class="wrap">
-  <h1>デザインルール</h1>
-  <p class="sub">デザインする時のルールを検索できるよ。</p>
+  <h1>ルールブック</h1>
+  <p class="sub">いろんなルールを検索できるよ。</p>
   <input class="search" id="q" type="search" placeholder="ルール名・内容・ラベルで検索…">
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
     <button class="btn" id="labelBtn">ラベル管理</button>
@@ -101,8 +101,8 @@ function sanitizeHtml(html){
 }
 function autoColor(name){ let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; }
 function labelOf(r){ return labels.find(l => l.id === r.label_id); }
-function chipHtml(r){ const l = labelOf(r); if (!l) return '<span class="chip" style="background:#eaf5fd">' + CATS[r.category] + "</span>";
-  return '<span class="chip" style="background:' + (l.color || autoColor(l.name)) + '">' + CATS[r.category] + "：" + esc(l.name) + "</span>"; }
+function chipHtml(r){ const l = labelOf(r); if (!l) return '<span class="chip" data-cat="' + CATS[r.category] + '" style="background:#eaf5fd;cursor:pointer">' + CATS[r.category] + "</span>";
+  return '<span class="chip" data-lab="' + l.id + '" style="background:' + (l.color || autoColor(l.name)) + ';cursor:pointer">' + CATS[r.category] + "：" + esc(l.name) + "</span>"; }
 
 async function load(){
   if (!sb) { $("empty").textContent = "まず index.html の冒頭に、自分の Supabase の URL とキー（Publishable key）を入れてね。"; $("empty").style.display = "block"; return; }
@@ -119,7 +119,7 @@ function render(){
     if (bmOnly && !bookmarks.has(r.id)) return false;
     if (!q) return true;
     const l = labelOf(r);
-    return (r.title + " " + r.body + " " + (l ? l.name : "") + " " + (r.tags || "")).toLowerCase().includes(q);
+    return (r.title + " " + r.body + " " + (l ? l.name : "") + " " + (CATS[r.category] || "") + " " + (r.tags || "")).toLowerCase().includes(q);
   });
   $("empty").style.display = rules.length ? "none" : "block";
   $("grid").innerHTML = list.map(r =>
@@ -139,6 +139,10 @@ $("dlg").addEventListener("click", async e => {
     return; }
   const im = e.target.closest("img"); if (im && !im.closest(".editor")) im.classList.toggle("zoom"); });
 $("grid").addEventListener("click", async e => {
+  const lab = e.target.closest("[data-lab]");
+  if (lab){ e.stopPropagation(); const l = labels.find(x => x.id === lab.dataset.lab); if (l){ $("q").value = l.name; render(); } return; }
+  const cat = e.target.closest("[data-cat]");
+  if (cat){ e.stopPropagation(); $("q").value = cat.dataset.cat; render(); return; }
   const del = e.target.closest("[data-del]");
   if (del){ e.stopPropagation(); const id = del.dataset.del;
     if (del.dataset.armed){ await sb.from("rules").delete().eq("id", id); load(); }
@@ -254,8 +258,10 @@ $("labelBtn").onclick = () => {
 const PW_HASH = "219c74d07e79871812d8747781819595cf18ac3626d5ff01e0b8eb9dbed092d2";
 async function sha256hex(str){ const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
 async function tryUnlock(){
-  const h = await sha256hex($("pw").value);
-  if (h === PW_HASH){ sessionStorage.setItem("dr_unlocked", "1"); $("lock").style.display = "none"; load(); }
+  const v = $("pw").value.trim();
+  const h1 = await sha256hex(v);
+  const h2 = v === v.toLowerCase() ? h1 : await sha256hex(v.toLowerCase());
+  if (h1 === PW_HASH || h2 === PW_HASH){ sessionStorage.setItem("dr_unlocked", "1"); $("lock").style.display = "none"; load(); }
   else { $("pwMsg").textContent = "パスワードが違うよ"; }
 }
 $("pwBtn").addEventListener("click", tryUnlock);
